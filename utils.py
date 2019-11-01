@@ -2,7 +2,7 @@
 import numpy as np
 from helper.load_data_helper import load_csv_to_numpy
 
-data = load_csv_to_numpy("ratings.csv")
+data = load_csv_to_numpy("ratings_6M.csv")
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 
