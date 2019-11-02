@@ -2,9 +2,11 @@
 import numpy as np
 from helper.load_data_helper import load_csv_to_numpy
 
-data = load_csv_to_numpy("ratings_6M.csv")
+data = load_csv_to_numpy("dataset/small_dataset/interactions_small.csv")
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
+
+# to do: Cache all user embedding and item embedding
 
 def getUserEmbedding(userID):
    items = np.zeros(nb_item, dtype=np.int8)
@@ -20,4 +22,28 @@ def getItemEmbedding(itemID):
       users[item - 1] = 1
    return users
 
-# print(getItemEmbedding(258))
+# return userEmbedding after remove one interaction and list of unobserved book embeddings
+# (user_em, [(book_id, book_em)])
+def leaveOneOut_user(userID):
+   userEm = getUserEmbedding(userID)
+   unobs_books, obs_books = [], []
+   for book_id in range(1, nb_item):
+      if userEm[book_id - 1] == 0:
+         unobs_books.append(book_id)
+      else:
+         obs_books.append(book_id)
+   
+   assert(len(obs_books) > 0)
+   np.random.shuffle(obs_books)
+   rm_book_id = obs_books[0]
+   userEm[rm_book_id - 1] = 0
+   rm_book_em = getItemEmbedding(rm_book_id)
+   rm_book_em[userID - 1] = 0
+
+   books = [(rm_book_id, rm_book_em)]
+   for book_id in unobs_books:
+      books.append((book_id, getItemEmbedding(book_id)))
+   return (userEm, books)
+
+   
+   
