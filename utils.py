@@ -2,7 +2,7 @@
 import numpy as np
 from helper.load_data_helper import load_csv_to_numpy
 
-data = load_csv_to_numpy("dataset/small_dataset/interactions_small.csv")
+data = load_csv_to_numpy("dataset/new_interactions.csv")
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 
@@ -30,8 +30,8 @@ def getItemEmbedding(itemID):
    return np.array(cache_item_embeddings[itemID])
 
 # return userEmbedding after remove one interaction and list of unobserved book embeddings
-# (user_em, [(book_id, book_em)])
-def leaveOneOut_user(userID):
+# (user_em, remove_book_id, [(book_id, book_em)])
+def leaveOneOutUser(userID):
    userEm = getUserEmbedding(userID)
    unobs_books, obs_books = [], []
    for book_id in range(1, nb_item):
@@ -50,7 +50,7 @@ def leaveOneOut_user(userID):
    books = [(rm_book_id, rm_book_em)]
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))
-   return (userEm, books)
+   return (userEm, rm_book_id, books)
 
 
    
