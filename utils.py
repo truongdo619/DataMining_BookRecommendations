@@ -6,21 +6,28 @@ data = load_csv_to_numpy("dataset/small_dataset/interactions_small.csv")
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 
-# to do: Cache all user embedding and item embedding
+cache_user_embeddings = {}
+cache_item_embeddings = {}
 
 def getUserEmbedding(userID):
+   if userID in cache_user_embeddings.keys():
+      return np.array(cache_user_embeddings[userID])
    items = np.zeros(nb_item, dtype=np.int8)
    tmp = np.delete(data[data[:, 0] == userID], 0 , 1).flatten()
    for item in tmp:
       items[item - 1] = 1
-   return items
+   cache_user_embeddings[userID] = items;
+   return np.array(cache_user_embeddings[userID])
 
 def getItemEmbedding(itemID):
+   if itemID in cache_item_embeddings.keys():
+      return np.array(cache_item_embeddings[itemID])
    users = np.zeros(nb_user, dtype=np.int8)
    tmp = np.delete(data[data[:, 1] == itemID], 1 , 1).flatten()
    for item in tmp:
       users[item - 1] = 1
-   return users
+   cache_item_embeddings[itemID] = users;
+   return np.array(cache_item_embeddings[itemID])
 
 # return userEmbedding after remove one interaction and list of unobserved book embeddings
 # (user_em, [(book_id, book_em)])
@@ -44,6 +51,7 @@ def leaveOneOut_user(userID):
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))
    return (userEm, books)
+
 
    
    
