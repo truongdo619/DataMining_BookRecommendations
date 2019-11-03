@@ -17,12 +17,11 @@ class KnnRecommender:
         print('......\n')
 
     def make_recommendations(self, inputs, top_n=10):
-        user_em = inputs[0]
-        books = inputs[1]
+        user_id = inputs[0]
+        user_em = inputs[1]
+        books = inputs[2]
         indices = [i for i in range(1, user_em.shape[0] + 1) if user_em[i - 1] != 0]
         sample = indices
-        # print('Recommendation system start to make reference ')
-        # print('......\n')
         cos_dict = {}
         for book in books:
             book_id, book_em = book

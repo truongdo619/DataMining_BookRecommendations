@@ -14,7 +14,7 @@ class Eval(object):
     def eval_user(self, user_id):
         user_em, rm_book_id, books_to_eval = leaveOneOutUser(user_id)
         # feed to model to get top n books
-        top_n_books_id = self.eval_helper.getResult((user_em, books_to_eval))
+        top_n_books_id = self.eval_helper.getResult((user_id, user_em, books_to_eval))
         print(user_id, top_n_books_id)
         if rm_book_id in top_n_books_id:
             return 1

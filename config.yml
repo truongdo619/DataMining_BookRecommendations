@@ -2,3 +2,4 @@ data_path:
     small: "dataset/interactions.csv"
 data_test_path: "dataset/test_interactions.csv"
 random_sample_test_KNN: 100
+NCF_model_path : "modelsNCF/test"
