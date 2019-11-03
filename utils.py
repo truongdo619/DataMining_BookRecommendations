@@ -7,7 +7,8 @@ import random
 
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
-data = load_csv_to_numpy(cfg["data_path"]["small"])
+
+data = load_csv_to_numpy(cfg["data_path"]["small"]) # (user_id, book_id)
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 
@@ -57,3 +58,21 @@ def leaveOneOutUser(userID):
       books.append((book_id, getItemEmbedding(book_id)))
 
    return (userEm, rm_book_id, books)
+
+def batch_iter(data, batch_size, num_epochs, shuffle=True):
+    data = np.array(data)
+    data_size = len(data)
+    num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
+    res = []
+    for epoch in range(num_epochs):
+        if shuffle:
+            shuffle_indices = np.random.permutation(np.arange(data_size))
+            shuffled_data = data[shuffle_indices]
+        else:
+            shuffled_data = data
+        for batch_num in range(num_batches_per_epoch):
+            start_index = batch_num * batch_size
+            end_index = min((batch_num + 1) * batch_size, data_size)
+            res.append(shuffled_data[start_index:end_index])
+    return res
+    

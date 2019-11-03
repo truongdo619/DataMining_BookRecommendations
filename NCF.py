@@ -12,8 +12,8 @@ class NCF(object):
       self, nb_users, nb_items, mlp_layer_sizes, mf_dim, l2_reg_lambda=0.0):
 
         # Placeholders for input, output and dropout
-        self.input_user = tf.placeholder(tf.int32, [None, nb_items], name="input_user")
-        self.input_item = tf.placeholder(tf.int32, [None, nb_items], name="input_item")
+        self.input_user = tf.placeholder(tf.int32, [None], name="input_user")
+        self.input_item = tf.placeholder(tf.int32, [None], name="input_item")
         self.input_y = tf.placeholder(tf.float32, [None, 1], name="input_y")
         self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
@@ -40,8 +40,10 @@ class NCF(object):
         mf_output = tf.math.multiply(self.embedded_mf_item, self.embedded_mf_user)
 
         # MLP layer
-        mlp_input = tf.concat((self.embedded_mlp_item, self.embedded_mf_user), 1)
-        
+        mlp_input = tf.concat((self.embedded_mlp_item, self.embedded_mlp_user), 1)
+        print(self.input_user.shape)
+        print(self.W_items[:, mf_dim:].shape, self.embedded_mlp_item.shape)
+
         for i in range(1, len(mlp_layer_sizes)):
             prev_size = mlp_layer_sizes[i - 1]
             current_size = mlp_layer_sizes[i]
@@ -62,7 +64,7 @@ class NCF(object):
         with tf.name_scope("output"):
             W = tf.get_variable(
                 "W_output",
-                shape=[mlp_layer_sizes[:-1], 1],
+                shape=[mlp_layer_sizes[-1] + mf_dim, 1],
                 initializer=tf.contrib.layers.xavier_initializer())
             b = tf.Variable(tf.constant(0.1, shape=[1]), name="b")
             self.scores = tf.nn.xw_plus_b(logits, W, b, name="scores")

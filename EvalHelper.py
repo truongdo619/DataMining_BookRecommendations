@@ -1,4 +1,4 @@
-from KNN_recommender import KnnRecommender
+from KNN import KnnRecommender
 
 class EvalHelper(object):
 
