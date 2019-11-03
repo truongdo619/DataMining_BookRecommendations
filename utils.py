@@ -11,6 +11,9 @@ data = load_csv_to_numpy(cfg["data_path"]["small"])
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 
+tmp = load_csv_to_numpy(cfg["data_test_path"])
+user_to_remove_bookID = { item[0] : item[1] for item in tmp}
+
 cache_user_embeddings = {}
 cache_item_embeddings = {}
 
@@ -44,7 +47,7 @@ def leaveOneOutUser(userID):
          unobs_books.append(book_id)
       else:
          obs_books.append(book_id)
-   
+
    assert(len(obs_books) > 0)
    np.random.shuffle(obs_books)
    rm_book_id = obs_books[0]
@@ -56,7 +59,3 @@ def leaveOneOutUser(userID):
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))
    return (userEm, rm_book_id, books)
-
-
-   
-   
