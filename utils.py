@@ -47,15 +47,13 @@ def leaveOneOutUser(userID):
          unobs_books.append(book_id)
       else:
          obs_books.append(book_id)
-
-   assert(len(obs_books) > 0)
-   np.random.shuffle(obs_books)
-   rm_book_id = obs_books[0]
-   userEm[rm_book_id - 1] = 0
+         
+   rm_book_id = user_to_remove_bookID[userID]
    rm_book_em = getItemEmbedding(rm_book_id)
-   rm_book_em[userID - 1] = 0
+
    books = [(rm_book_id, rm_book_em)]
    unobs_books = random.sample(unobs_books, cfg['random_sample_test_KNN'])
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))
+
    return (userEm, rm_book_id, books)

@@ -1,6 +1,4 @@
 data_path:
     small: "dataset/interactions.csv"
 data_test_path: "dataset/test_interactions.csv"
-num_run_each_user: 5
-random_sample_KNN: 1000
 random_sample_test_KNN: 80

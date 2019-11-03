@@ -21,15 +21,12 @@ class KnnRecommender:
         books = inputs[1]
         indices = [i for i in range(1, user_em.shape[0] + 1) if user_em[i - 1] != 0]
         sample = indices
-        random_samples = cfg['random_sample_KNN']
-        if len(sample) > random_samples:
-            sample = random.sample(sample, random_samples)
         # print('Recommendation system start to make reference ')
         # print('......\n')
         cos_dict = {}
         for book in books:
             book_id, book_em = book
-            tmp = [ self.cos_sim(getItemEmbedding(item), book_em) for item in sample]
+            tmp = [self.cos_sim(getItemEmbedding(item), book_em) for item in sample]
             cos_dict[book_id] = statistics.mean(tmp)
         return dict(sorted(cos_dict.items(), key=lambda x: x[1], reverse=True)[:top_n]).keys()
 

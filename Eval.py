@@ -12,24 +12,22 @@ class Eval(object):
             self.cfg = yaml.load(ymlfile)
 
     def eval_user(self, user_id):
-        total_hits = 0
-        num_runs = int(self.cfg['num_run_each_user'])
-        for _ in range(0, num_runs):
-            user_em, rm_book_id, books_to_eval = leaveOneOutUser(user_id)
-            # feed to model to get top n books
-            top_n_books_id = self.eval_helper.getResult((user_em, books_to_eval))
-            if rm_book_id in top_n_books_id:
-                total_hits += 1
-        return total_hits / num_runs
+        user_em, rm_book_id, books_to_eval = leaveOneOutUser(user_id)
+        # feed to model to get top n books
+        top_n_books_id = self.eval_helper.getResult((user_em, books_to_eval))
+        print(user_id, top_n_books_id)
+        if rm_book_id in top_n_books_id:
+            return 1
+        return 0
 
 def runEval(HR_top, model):
     eval = Eval(HR_top, model)
     hits_count = 0
     
-    for user_id in range(1, 5):
+    for user_id in range(1, nb_user + 1):
         hits_count = hits_count + eval.eval_user(user_id)
 
-    HR_score = hits_count / 5
+    HR_score = hits_count / nb_user
     return HR_score
     ### to do run multiple times for better evaluation
 
