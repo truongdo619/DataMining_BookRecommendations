@@ -1,5 +1,6 @@
 from EvalHelper import EvalHelper
 from utils import *
+import argparse
 
 class Eval(object):
 
@@ -27,7 +28,20 @@ def runEval(HR_top, model):
     return HR_score
     ### to do run multiple times for better evaluation
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', nargs='?', default='NCF',
+                        help='input data path')
+    parser.add_argument('--top_n', type=int, default=10,
+                        help='top n book recommendations')
+    return parser.parse_args()
+
 if __name__ == "__main__":
+    # get args
+    # args = parse_args()
+    # HR_top = args.top_n
+    # model = args.model
+
     ### to do add some configure here
     HR_top = 10
     model = 'NCF'

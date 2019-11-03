@@ -1,8 +1,12 @@
 
 import numpy as np
 from helper.load_data_helper import load_csv_to_numpy
+import yaml
 
-data = load_csv_to_numpy("dataset/new_interactions.csv")
+
+with open("config.yml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
+data = load_csv_to_numpy(cfg["data_path"]["small"])
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 

@@ -1,13 +1,15 @@
+from KNN_recommender import KnnRecommender
+
 class EvalHelper(object):
 
-    def __init__(self, hr_top, model = 'NCF'):
+    def __init__(self, hr_top, model='NCF'):
         self.top_n = hr_top
         self.model = model
-    
+
     def getResultFromKNN(self, inputs):
-        ### to do here
+        recommender = KnnRecommender()
         # return top_n book_id having highest score
-        return [1]
+        return recommender.make_recommendations(inputs, self.top_n)
     
     def getResultFromNCF(self, inputs):
         ### to to here
