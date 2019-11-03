@@ -1,11 +1,13 @@
-from utils import *
+import csv
+import itertools
 
-num_users_test = 1000
+with open('dataset/books.csv', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
 
-for i in range(1, num_users_test):
-    a = leaveOneOutUser(i)[0]
-    b = getUserEmbedding(i)
-    if(sum(b - a) != 1):
-        print(sum(b - a))
-    assert(sum(b - a) == 1)
-
+    with open('dataset/abc.csv', 'w', newline='') as cb:
+        writer = csv.writer(cb, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["book_id", "title"])
+        tmp = []
+        for item in itertools.islice(reader, 1000):
+            writer.writerow([item['book_id'], item['title']])
