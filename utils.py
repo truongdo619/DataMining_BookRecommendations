@@ -2,6 +2,7 @@
 import numpy as np
 from helper.load_data_helper import load_csv_to_numpy
 import yaml
+import random
 
 
 with open("config.yml", 'r') as ymlfile:
@@ -50,8 +51,8 @@ def leaveOneOutUser(userID):
    userEm[rm_book_id - 1] = 0
    rm_book_em = getItemEmbedding(rm_book_id)
    rm_book_em[userID - 1] = 0
-
    books = [(rm_book_id, rm_book_em)]
+   unobs_books = random.sample(unobs_books, cfg['random_sample_test_KNN'])
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))
    return (userEm, rm_book_id, books)
