@@ -5,11 +5,11 @@ class EvalHelper(object):
     def __init__(self, hr_top, model='NCF'):
         self.top_n = hr_top
         self.model = model
+        self.recommender = KnnRecommender()
 
     def getResultFromKNN(self, inputs):
-        recommender = KnnRecommender()
         # return top_n book_id having highest score
-        return recommender.make_recommendations(inputs, self.top_n)
+        return self.recommender.make_recommendations(inputs, self.top_n)
     
     def getResultFromNCF(self, inputs):
         ### to to here

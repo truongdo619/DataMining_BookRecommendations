@@ -4,6 +4,10 @@ import os
 import numpy as np
 import random
 import statistics
+import yaml
+
+with open("config.yml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -17,10 +21,11 @@ class KnnRecommender:
         books = inputs[1]
         indices = [i for i in range(1, user_em.shape[0] + 1) if user_em[i - 1] != 0]
         sample = indices
-        if len(sample) > 50:
-            sample = random.sample(sample, 50)
-        print('Recommendation system start to make reference ')
-        print('......\n')
+        random_samples = cfg['random_sample_KNN']
+        if len(sample) > random_samples:
+            sample = random.sample(sample, random_samples)
+        # print('Recommendation system start to make reference ')
+        # print('......\n')
         cos_dict = {}
         for book in books:
             book_id, book_em = book
