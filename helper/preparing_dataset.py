@@ -3,6 +3,9 @@ from numpy import genfromtxt,savetxt
 import numpy as np
 from load_data_helper import load_csv_to_numpy
 import random
+import sys
+sys.path.insert(0, './')
+from utils import *
 
 def preparing(path, threshold = 20):
     data = load_csv_to_numpy(path)
@@ -48,5 +51,19 @@ def generate_test_interaction(path):
     savetxt("dataset/interactions.csv", train_interactions, delimiter="\t", fmt="%d")
     savetxt("dataset/test_interactions.csv", test_interactions, delimiter="\t", fmt="%d")
 
-# if __name__ == '__main__':
-    # generate_test_interaction("dataset/interactions.csv")
+def generate_unobserved_interactions():
+    with open('dataset/unobserved_interactions.csv', 'w', newline='') as cb:
+        writer = csv.writer(cb, delimiter='\t',
+                            quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for item in range(1, nb_user+1):
+            tmp = getUserEmbedding(item)
+            indices = [i for i in range(1, tmp.shape[0] + 1) if tmp[i - 1] == 0]
+            if len(indices) > nb_item // 2:
+                indices = random.sample(indices, nb_item - len(indices))
+
+                for tm in indices:
+                    print(tm)
+                    writer.writerow([item, tm])
+
+if __name__ == '__main__':
+    generate_unobserved_interactions()
