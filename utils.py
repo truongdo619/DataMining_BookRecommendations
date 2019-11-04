@@ -8,7 +8,9 @@ import random
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
-data = load_csv_to_numpy(cfg["data_path"]["small"]) # (user_id, book_id)
+data = load_csv_to_numpy(cfg["data_path"]["pos"]) # (user_id, book_id)
+data_neg = load_csv_to_numpy(cfg["data_path"]["neg"])
+
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
 

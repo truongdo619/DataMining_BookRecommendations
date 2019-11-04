@@ -11,21 +11,21 @@ from utils import *
 
 
 # Data loading params
-tf.flags.DEFINE_float("dev_sample_percentage", .2, "Percentage of the training data to use for validation")
+tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
 
 # Model Hyperparameters
-tf.flags.DEFINE_integer("mf_dim", 16, "Dimensionality of character embedding (default: 16)")
-tf.flags.DEFINE_string("mlp_layer_sizes", "32,16,8", "Comma-separated filter sizes (default: '3,4,5')")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
+tf.flags.DEFINE_integer("mf_dim", 32, "Dimensionality of character embedding (default: 16)")
+tf.flags.DEFINE_string("mlp_layer_sizes", "64,32,16,8", "Comma-separated filter sizes (default: '3,4,5')")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.8, "Dropout keep probability (default: 0.5)")
 tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
+tf.flags.DEFINE_integer("batch_size", 128, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
 tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store (default: 5)")
-tf.flags.DEFINE_integer("limit_early_stop", 10, "Early stop parameter")
+tf.flags.DEFINE_integer("limit_early_stop", 25, "Early stop parameter")
 tf.flags.DEFINE_integer("timestamp", 1, "Time Stamp")
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -39,23 +39,32 @@ def run_train(_timestamp):
     # Load data
     print("Loading data...")
 
-    _data = data
-    np.random.shuffle(_data)
-    num_dev = int(FLAGS.dev_sample_percentage * len(data_training))
-    print(data)
-    data_train = _data[num_dev:]
-    data_dev = _data[:num_dev]
+    _data_pos = data
+    _data_neg = data_neg
+    np.random.shuffle(_data_pos)
+    np.random.shuffle(_data_neg)
+    num_dev_pos = int(FLAGS.dev_sample_percentage * len(_data_pos))
+    num_dev_neg = int(FLAGS.dev_sample_percentage * len(_data_neg))
+
+    data_train_pos = _data_pos[num_dev_pos:]
+    data_dev_pos = _data_pos[:num_dev_pos]
+    data_train_neg = _data_neg[num_dev_neg:]
+    data_dev_neg = _data_neg[:num_dev_neg]
+    
+    data_train = np.concatenate((data_train_pos, data_train_neg), 0)
+    data_dev = np.concatenate((data_dev_pos, data_dev_neg), 0)
 
     x_user_train, x_item_train = list(zip(*data_train))
     x_user_train = [user_id - 1 for user_id in x_user_train]
     x_item_train = [item_id - 1 for item_id in x_item_train]
     
+
     x_user_dev, x_item_dev = list(zip(*data_dev))
     x_user_dev = [user_id - 1 for user_id in x_user_dev]
     x_item_dev = [item_id - 1 for item_id in x_item_dev]
     
-    y_train = [[1] for _ in range(0, len(data_train))]
-    y_dev = [[1] for _ in range(0, len(data_dev))]
+    y_train = [[1] for _ in range(0, len(data_train_pos))] + [[0] for _ in range(0, len(data_train_neg))]
+    y_dev = [[1] for _ in range(0, len(data_dev_pos))] + [[0] for _ in range(0, len(data_dev_neg))]
 
 
     print("Number of users: ", nb_user)

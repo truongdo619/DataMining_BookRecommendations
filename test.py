@@ -2,7 +2,7 @@ import csv
 import itertools
 from EvalNCF import EvaluationNCF
 
-eval = EvaluationNCF(1)
+eval = EvaluationNCF(10)
 
 inputs = [153, 1, [(112, []), (274, []), (341, []), (42, [])]]
 

@@ -21,11 +21,11 @@ class NCF(object):
         # Embedding layer
         with tf.device('/cpu:0'), tf.name_scope("embedding"):
             self.W_users = tf.Variable(
-                tf.random_uniform([nb_items, embedding_size], -0.0, 0.0),
+                tf.random_uniform([nb_items, embedding_size], -0.1, 0.1),
                 name="W_user",
                 trainable = True)
             self.W_items = tf.Variable(
-                tf.random_uniform([nb_users, embedding_size], -0.0, 0.0),
+                tf.random_uniform([nb_users, embedding_size], -0.1, 0.1),
                 name="W_item",
                 trainable = True)
             # Matrix Factorization Embedding
