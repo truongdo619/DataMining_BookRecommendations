@@ -125,3 +125,6 @@ dmypy.json
 .pyre/
 .vscode/settings.json
 modelsNCF/
+dataset.zip
+.DS_Store
+dataset/D.py

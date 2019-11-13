@@ -10,6 +10,7 @@ with open("config.yml", 'r') as ymlfile:
 
 data = load_csv_to_numpy(cfg["data_path"]["pos"]) # (user_id, book_id)
 data_neg = load_csv_to_numpy(cfg["data_path"]["neg"])
+data_test = load_csv_to_numpy(cfg["data_test_path"])
 
 nb_user = np.amax(np.delete(data,1,1))
 nb_item = np.amax(np.delete(data,0,1))
@@ -55,6 +56,7 @@ def leaveOneOutUser(userID):
    rm_book_em = getItemEmbedding(rm_book_id)
 
    books = [(rm_book_id, rm_book_em)]
+   unobs_books = unobs_books[-2 * cfg['random_sample_test_KNN']:]
    unobs_books = random.sample(unobs_books, cfg['random_sample_test_KNN'])
    for book_id in unobs_books:
       books.append((book_id, getItemEmbedding(book_id)))

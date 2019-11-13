@@ -26,7 +26,7 @@ class KnnRecommender:
         for book in books:
             book_id, book_em = book
             tmp = [self.cos_sim(getItemEmbedding(item), book_em) for item in sample]
-            cos_dict[book_id] = statistics.mean(tmp)
+            cos_dict[book_id] = max(tmp)
         return dict(sorted(cos_dict.items(), key=lambda x: x[1], reverse=True)[:top_n]).keys()
 
     @staticmethod

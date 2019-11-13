@@ -1,6 +1,6 @@
 data_path:
-    pos: "dataset/interactions.csv"
-    neg: "dataset/unobserved_interactions.csv"
-data_test_path: "dataset/test_interactions.csv"
-random_sample_test_KNN: 100
+    pos: "dataset/interactions_3k.csv"
+    neg: "dataset/unobserved_interactions_3k.csv"
+data_test_path: "dataset/test_interactions_3k.csv"
+random_sample_test_KNN: 80
 NCF_model_path : "modelsNCF/test"

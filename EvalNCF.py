@@ -6,6 +6,9 @@ import datetime, yaml
 from tensorflow.contrib import learn 
 from utils import *
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
 
 with open("config.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
@@ -53,8 +56,9 @@ class EvaluationNCF():
 
             for i in range(len(batche_prediction)):
                 sfm = batche_prediction[i]
-                all_predictions.append((sfm[0], x_item[i]))
+                all_predictions.append((sigmoid(sfm[0]), x_item[i]))
         
         all_predictions = sorted(all_predictions, reverse = True)
+        # print(all_predictions)
         top_ids = [x[1] + 1 for x in all_predictions[:self.top_n]]
         return top_ids

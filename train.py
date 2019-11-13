@@ -8,6 +8,7 @@ from tensorflow.contrib import learn
 import yaml
 import math
 from utils import *
+import sys
 
 
 # Data loading params
@@ -15,12 +16,12 @@ tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training d
 
 # Model Hyperparameters
 tf.flags.DEFINE_integer("mf_dim", 32, "Dimensionality of character embedding (default: 16)")
-tf.flags.DEFINE_string("mlp_layer_sizes", "64,32,16,8", "Comma-separated filter sizes (default: '3,4,5')")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.8, "Dropout keep probability (default: 0.5)")
+tf.flags.DEFINE_string("mlp_layer_sizes", "128,128,64,32", "Comma-separated filter sizes (default: '3,4,5')")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
 tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 128, "Batch Size (default: 64)")
+tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
@@ -33,6 +34,9 @@ tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on 
 tf.flags.DEFINE_float("decay_coefficient", 2.5, "Decay coefficient (default: 2.5)")
 
 FLAGS = tf.flags.FLAGS
+
+remaining_args = FLAGS([sys.argv[0]] + [flag for flag in sys.argv if flag.startswith("--")])
+assert(remaining_args == [sys.argv[0]])
 
 data_training = data
 def run_train(_timestamp):
@@ -91,9 +95,13 @@ def run_train(_timestamp):
 
             # Define Training procedure
             global_step = tf.Variable(0, name="global_step", trainable=False)
-            optimizer = tf.train.AdadeltaOptimizer(learning_rate=1.0,
-                                                    rho=0.95,
-                                                    epsilon=1e-06)
+            # optimizer = tf.train.AdadeltaOptimizer(learning_rate=1.0,
+            #                                         rho=0.95,
+            #                                         epsilon=1e-06)
+            optimizer = tf.train.AdamOptimizer(learning_rate=0.0045,
+                                            beta1=0.25, beta2=0.5,
+                                            epsilon=1e-8)
+            # optimizer = tf.train.AdamOptimizer(learning_rate=0.0001)
             # optimizer = tf.train.AdamOptimizer(ncf.learning_rate)
             grads_and_vars = optimizer.compute_gradients(ncf.loss)
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)

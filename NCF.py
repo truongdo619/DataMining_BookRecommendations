@@ -20,12 +20,16 @@ class NCF(object):
         embedding_size = mf_dim + mlp_layer_sizes[0] // 2
         # Embedding layer
         with tf.device('/cpu:0'), tf.name_scope("embedding"):
-            self.W_users = tf.Variable(
-                tf.random_uniform([nb_items, embedding_size], -0.1, 0.1),
+            self.W_users = tf.get_variable(
+                # tf.random_uniform([nb_items, embedding_size], -0.1, 0.1),
+                initializer = tf.random_normal_initializer(mean = 0.0, stddev = 0.01),
+                shape = [nb_items, embedding_size],
                 name="W_user",
                 trainable = True)
-            self.W_items = tf.Variable(
-                tf.random_uniform([nb_users, embedding_size], -0.1, 0.1),
+            self.W_items = tf.get_variable(
+                # tf.random_uniform([nb_users, embedding_size], -0.1, 0.1),
+                initializer = tf.random_normal_initializer(mean = 0.0, stddev = 0.01),
+                shape = [nb_users, embedding_size],
                 name="W_item",
                 trainable = True)
             # Matrix Factorization Embedding
@@ -41,18 +45,15 @@ class NCF(object):
 
         # MLP layer
         mlp_input = tf.concat((self.embedded_mlp_item, self.embedded_mlp_user), 1)
-        print(self.input_user.shape)
-        print(self.W_items[:, mf_dim:].shape, self.embedded_mlp_item.shape)
 
         for i in range(1, len(mlp_layer_sizes)):
             prev_size = mlp_layer_sizes[i - 1]
             current_size = mlp_layer_sizes[i]
-            W_cur = tf.Variable(
-                tf.random_normal([prev_size, current_size])
-            )
-            bias_cur = tf.Variable(
-                tf.random_normal([current_size])
-            )
+            W_cur = tf.get_variable(
+                name = "W_cur" + str(i),
+                shape=[prev_size, current_size],
+                initializer=tf.contrib.layers.xavier_initializer())
+            bias_cur = tf.Variable(tf.constant(0.1, shape=[current_size]), name = "bias" + str(i))
             h = tf.add(tf.matmul(mlp_input, W_cur), bias_cur)
             mlp_input = tf.nn.relu(h)
             mlp_input = tf.nn.dropout(mlp_input, self.dropout_keep_prob)

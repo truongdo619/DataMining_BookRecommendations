@@ -4,7 +4,7 @@ from EvalNCF import EvaluationNCF
 
 eval = EvaluationNCF(10)
 
-inputs = [153, 1, [(112, []), (274, []), (341, []), (42, [])]]
+inputs = [3000, 100, [(2787, []), (274, []), (341, []), (42, []), (47, [])]]
 
 print(eval.query(inputs))
 
