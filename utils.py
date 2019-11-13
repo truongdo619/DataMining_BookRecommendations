@@ -27,7 +27,7 @@ def getUserEmbedding(userID):
    tmp = np.delete(data[data[:, 0] == userID], 0 , 1).flatten()
    for item in tmp:
       items[item - 1] = 1
-   cache_user_embeddings[userID] = items;
+   cache_user_embeddings[userID] = items
    return np.array(cache_user_embeddings[userID])
 
 def getItemEmbedding(itemID):
@@ -37,7 +37,7 @@ def getItemEmbedding(itemID):
    tmp = np.delete(data[data[:, 1] == itemID], 1 , 1).flatten()
    for item in tmp:
       users[item - 1] = 1
-   cache_item_embeddings[itemID] = users;
+   cache_item_embeddings[itemID] = users
    return np.array(cache_item_embeddings[itemID])
 
 # return userEmbedding after remove one interaction and list of unobserved book embeddings
